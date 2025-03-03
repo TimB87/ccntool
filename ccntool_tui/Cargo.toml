@@ -11,4 +11,4 @@ publish = false
 
 [dependencies]
 ccntool_core = { path = "../ccntool_core" }
-cursive = { version = "0.20.0", default-features = false, features = ["crossterm-backend"] }
+cursive = { version = "0.21.1", default-features = false, features = ["crossterm-backend"] }
