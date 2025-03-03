@@ -24,14 +24,14 @@ impl EguiSandbox {
 
         fonts.font_data.insert(
             "hsd".into(),
-            egui::FontData::from_static(include_bytes!("../../assets/HSDSans-Regular.ttf")).tweak(
-                FontTweak {
+            egui::FontData::from_static(include_bytes!("../../assets/HSDSans-Regular.ttf"))
+                .tweak(FontTweak {
                     scale: 1.0,
                     y_offset_factor: 0.15,
                     y_offset: 0.0,
                     baseline_offset_factor: 0.0,
-                },
-            ),
+                })
+                .into(),
         );
 
         fonts
@@ -40,14 +40,14 @@ impl EguiSandbox {
 
         fonts.font_data.insert(
             "emoji".to_owned(),
-            egui::FontData::from_static(include_bytes!("../../assets/Bacon.ttf")).tweak(
-                FontTweak {
+            egui::FontData::from_static(include_bytes!("../../assets/Bacon.ttf"))
+                .tweak(FontTweak {
                     scale: 0.90,
                     y_offset_factor: 0.3,
                     y_offset: 0.0,
                     baseline_offset_factor: 1.0,
-                },
-            ),
+                })
+                .into(),
         );
 
         fonts
@@ -80,8 +80,8 @@ impl eframe::App for EguiSandbox {
         egui::Rgba::TRANSPARENT.to_array()
     }
 
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        custom_window_frame(ctx, frame, "TDQU", |ui| {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        custom_window_frame(ctx, "TDQU", |ui| {
             ui.add(DropDownBox::from_iter(
                 &self.ports,
                 "portselector",
@@ -153,7 +153,7 @@ impl eframe::App for EguiSandbox {
                     ui.group(|ui| {
                         egui::Grid::new("Settingsgrid").show(ui, |ui| {
                             ui.label("Theme: ");
-                            egui::widgets::global_dark_light_mode_buttons(ui);
+                            egui::widgets::global_theme_preference_buttons(ui);
                             ui.end_row();
                             ui.label("Username:");
                             ui.add(egui::TextEdit::singleline(&mut self.my_username));
@@ -228,14 +228,5 @@ Description: {}"#,
 
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, self);
-    }
-
-    fn on_close_event(&mut self) -> bool {
-        self.results.clear();
-        self.buf = String::new();
-        self.error.clear();
-        self.settings_toggler = false;
-
-        true
     }
 }
