@@ -13,14 +13,14 @@ env:
 
 jobs:
   build_and_test:
-    name: Rust project - latest
-    runs-on: ubuntu-latest
+    name: Rust project - ${{ matrix.os }} - ${{ matrix.toolchain }}
+    runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
-        toolchain:
-          - stable
-          - beta
-          - nightly
+        os: [ubuntu-latest, windows-latest]
+        toolchain: [stable, beta, nightly]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -34,7 +34,27 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Build with ${{ matrix.toolchain }}
-        run: cargo build --verbose
+        run: cargo build --verbose --release
 
       - name: Check with ${{ matrix.toolchain }}
         run: cargo check --verbose
+
+      - name: Upload artifacts (Linux)
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v3
+        with:
+          name: binaries-linux-${{ matrix.toolchain }}
+          path: |
+            target/release/ccntool_gui
+            target/release/ccntool_cli
+            target/release/ccntool_tui
+
+      - name: Upload artifacts (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v3
+        with:
+          name: binaries-windows-${{ matrix.toolchain }}
+          path: |
+            target/release/ccntool_gui.exe
+            target/release/ccntool_cli.exe
+            target/release/ccntool_tui.exe
